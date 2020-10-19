@@ -1,0 +1,52 @@
+DAX Calculations | Power BI
+*//Calculated Field Name //
+
+REPORTS SOURCE PATHS
+
+Holidays Table (Updated till 2021):https://github.com/ghulakis/DaxCalcRprt.git
+State Custom: https://github.com/ghulakis/DaxCalcRprt.git
+
+----------------------------------
+Handling Report DAX Calculations
+
+// Actual Delivery Date// = (if(FDL_OrderDeliveryDate.[Date]<> 0 , 
+OrderDeliveryDate,
+IF(OrderDeliveredOn <>0 , 
+OrderDeliveredOn,Today())))
+----------------------------------
+
+// Actual Shipment Day// = (if(OrderShipDate.[Date]<> 0, 
+OrderShipDate,
+if(Actual Delivery Date <>0,
+Actual Delivery Date,Today())))
+
+------------------------------------
+
+// Count Order //  = IF(DCS_OrderPickupPoint = "Courier", 
+if(and(DCS_OrderStatus="Delivered",
+TrackingNumber="Without"),FALSE,TRUE),TRUE)
+
+-------------------------------------
+
+// Average Shipment Days // = 
+CALCULATE(
+    COUNTROWS ( 'Holidays_' ) ,
+    DATESBETWEEN('Holidays_'[Date],'DCS_OrderCreatedOn,Actual Shipment Day-2),
+    Holidays_[Is Working Day]= TRUE(),
+    ALL ('Holidays_')
+)
+
+-------------------------------------
+
+// Days to Deliver // = 
+CALCULATE(
+    COUNTROWS ( 'Holidays_' ) ,
+    DATESBETWEEN('Holidays_'[Date],'OrderCreatedOn],Actual Delivery Date-1),
+    Holidays_[Is Working Day]= TRUE(),
+    ALL ('Holidays_')
+)
+
+----------------------------------------
+
+
+
